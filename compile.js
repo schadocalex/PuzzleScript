@@ -9,7 +9,7 @@ packages used:
 npm i rimraf compress-images web-resource-inliner ncp gifsicle@5.3.0 concat ycssmin terser gzipper html-minifier-terser glob   
 */
 
-const fs = require("fs");
+const fs = require('fs-extra');
 const path = require('path');
 const { execFileSync } = require('child_process');
 
@@ -38,9 +38,8 @@ var start = new Date()
 
 console.log("removing bin")
 
-fs.rmdirSync("./bin", { recursive: true });
-
-fs.mkdirSync('./bin');
+fs.removeSync("./bin");
+fs.ensureDirSync("./bin");
 
 console.log("Copying files")
 ncp.limit = 16;
@@ -99,7 +98,8 @@ ncp("./src", "./bin/", function (err) {
             fs.rmdirSync("./bin/css", { recursive: true });
             fs.mkdirSync('./bin/css');
             fs.rmdirSync("./bin/tests", { recursive: true });
-            fs.rmdirSync("./bin/Levels", { recursive: true });
+            fs.removeSync("./bin/Levels");
+            fs.ensureDirSync("./bin/Levels");
 
             console.log('compressing css');
 
