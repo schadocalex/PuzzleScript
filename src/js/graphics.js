@@ -341,8 +341,31 @@ function redraw() {
                 var playerPosition=playerPositions[0];
                 var px = (playerPosition/(curlevel.height))|0;
                 var py = (playerPosition%curlevel.height)|0;
-                mini=Math.max(Math.min(px-((screenwidth/2)|0),curlevel.width-screenwidth),0);
-                minj=Math.max(Math.min(py-((screenheight/2)|0),curlevel.height-screenheight),0);
+
+                if (state.metadata.zoomscreen_margin) {
+                    var marginx = state.metadata.zoomscreen_margin[0];
+                    var marginy = state.metadata.zoomscreen_margin[1];
+
+                    if (px < oldflickscreendat[0] + marginx) {
+                        mini = Math.max(px - marginx, 0);
+                    } else if (px >= oldflickscreendat[2] - marginx) {
+                        mini = Math.max(Math.min(px + marginx - screenwidth + 1, curlevel.width - screenwidth), 0);
+                    } else {
+                        mini = oldflickscreendat[0];
+                    }
+
+                    if (py < oldflickscreendat[1] + marginy) {
+                        minj = Math.max(py - marginy, 0);
+                    } else if (py >= oldflickscreendat[3] - marginy) {
+                        minj = Math.max(Math.min(py + marginy - screenheight + 1, curlevel.height - screenheight), 0);
+                    } else {
+                        minj = oldflickscreendat[1];
+                    }
+                } else {
+                    mini=Math.max(Math.min(px-((screenwidth/2)|0),curlevel.width-screenwidth),0);
+                    minj=Math.max(Math.min(py-((screenheight/2)|0),curlevel.height-screenheight),0);
+                }
+
                 maxi=Math.min(mini+screenwidth,curlevel.width);
                 maxj=Math.min(minj+screenheight,curlevel.height);
                 oldflickscreendat=[mini,minj,maxi,maxj];

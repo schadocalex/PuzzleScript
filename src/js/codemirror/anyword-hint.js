@@ -36,6 +36,7 @@
             ["throttle_movement", "", "For use in conjunction with realtime_interval - this stops you from moving crazy fast - repeated keypresses of the same movement direction will not increase your speed. This doesn't apply to the action button."],
             ["verbose_logging", "", "As you play the game, spits out information about all rules applied as you play, and also allows visual inspection of what exactly the rules do by hovering over them with your mouse (or tapping them on touchscreen)."],
             ["zoomscreen", "WxH", "Zooms the camera in to a WxH section of the map around the player, centered on the player."]
+            ["zoomscreen_margin", "WxH", "The player is not centered anymore in zoomscreen mode, and can go up to W or H tiles from the edges of the screen."]
         ];
 
         var COLOR_WORDS = [

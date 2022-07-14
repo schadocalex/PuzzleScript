@@ -2265,6 +2265,14 @@ function twiddleMetaData(state) {
             delete newmetadata.zoomscreen;
         }
     }
+    
+    if (newmetadata.zoomscreen_margin !== undefined) {
+        var val = newmetadata.zoomscreen_margin;
+        newmetadata.zoomscreen_margin = getCoords(val,state.metadata_lines.zoomscreen_margin);
+        if (newmetadata.zoomscreen_margin===null){
+            delete newmetadata.zoomscreen_margin;
+        }
+    }
 
     state.metadata = newmetadata;
 }
