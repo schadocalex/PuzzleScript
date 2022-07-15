@@ -46,6 +46,7 @@ var againinterval=150;
 var norepeat_action=false;
 var oldflickscreendat=[];//used for buffering old flickscreen/scrollscreen positions, in case player vanishes
 var keybuffer = [];
+var sprite_size = 5;
 
 var restarting=false;
 

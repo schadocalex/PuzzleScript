@@ -144,16 +144,22 @@ function generateExtraMembers(state) {
                 o.colors = ["#ff00ff"];
             }
             if (o.spritematrix.length === 0) {
-                o.spritematrix = [
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0]
-                ];
+                o.spritematrix = new Array(sprite_size).fill(0).map(() => new Array(sprite_size).fill(0));
             } else {
-                if (o.spritematrix.length !== 5 || o.spritematrix[0].length !== 5 || o.spritematrix[1].length !== 5 || o.spritematrix[2].length !== 5 || o.spritematrix[3].length !== 5 || o.spritematrix[4].length !== 5) {
-                    logWarning("Sprite graphics must be 5 wide and 5 high exactly.", o.lineNumber);
+                var isSize = true;
+                if (o.spritematrix.length !== sprite_size) {
+                    isSize = false;
+                }
+                for (let i = 0; i < sprite_size; i++) {
+                    if (o.spritematrix[i].length !== sprite_size) {
+                        isSize = false;
+                        break;
+                    }
+                }
+                if (!isSize) {
+                    logWarning("Sprite graphics must be " + sprite_size +" wide and " + sprite_size + " high exactly.",
+                        o.lineNumber
+                    );
                 }
                 o.spritematrix = generateSpriteMatrix(o.spritematrix);
             }
@@ -2207,7 +2213,7 @@ function checkObjectsAreLayered(state) {
 }
 
 function isInt(value) {
-return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+    return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
 }
 
 function twiddleMetaData(state) {
@@ -2271,6 +2277,16 @@ function twiddleMetaData(state) {
         newmetadata.zoomscreen_margin = getCoords(val,state.metadata_lines.zoomscreen_margin);
         if (newmetadata.zoomscreen_margin===null){
             delete newmetadata.zoomscreen_margin;
+        }
+    }
+
+    if (newmetadata.sprite_size !== undefined) {
+        var val = newmetadata.sprite_size;
+        newmetadata.sprite_size = getIntCheckedPositive(val,state.metadata_lines.sprite_size);
+        if (newmetadata.sprite_size===null){
+            delete newmetadata.sprite_size;
+        } else {
+            sprite_size = newmetadata.sprite_size;
         }
     }
 
@@ -2820,6 +2836,8 @@ function loadFile(str) {
         while (ss.eol() === false);
     }
 
+    twiddleMetaData(state);
+
     // delete state.lineNumber;
 
     generateExtraMembers(state);
@@ -2853,8 +2871,6 @@ function loadFile(str) {
 
     processWinConditions(state);
     checkObjectsAreLayered(state);
-
-    twiddleMetaData(state);
 
     generateLoopPoints(state);
 

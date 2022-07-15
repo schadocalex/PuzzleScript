@@ -649,6 +649,8 @@ function setGameState(_state, command, randomseed) {
     	repeatinterval=150;
     }
 
+	sprite_size = state.metadata.sprite_size || 5;
+	
     if (state.metadata.again_interval!==undefined) {
 		againinterval=state.metadata.again_interval*1000;
     } else {

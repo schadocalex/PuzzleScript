@@ -571,6 +571,7 @@ var codeMirrorFn = function() {
 
               metadata : state.metadata.concat([]),
               metadata_lines: Object.assign({}, state.metadata_lines),
+              sprite_size: state.sprite_size,
 
               levels: levelsCopy,
 
@@ -898,13 +899,14 @@ var codeMirrorFn = function() {
                             var o = state.objects[state.objects_candname];
 
                             spritematrix[spritematrix.length - 1] += ch;
-                            if (spritematrix[spritematrix.length-1].length>5){
-                                logWarning('Sprites must be 5 wide and 5 high.', state.lineNumber);
+                            console.log(state)
+                            if (spritematrix[spritematrix.length-1].length>state.sprite_size){
+                                logWarning('Sprites must be ' + state.sprite_size + ' wide and ' + state.sprite_size + ' high.', state.lineNumber);
                                 stream.match(reg_notcommentstart, true);
                                 return null;
                             }
                             o.spritematrix = state.objects_spritematrix;
-                            if (spritematrix.length === 5 && spritematrix[spritematrix.length - 1].length == 5) {
+                            if (spritematrix.length === state.sprite_size && spritematrix[spritematrix.length - 1].length === state.sprite_size) {
                                 state.objects_section = 0;
                             }
 
@@ -1520,7 +1522,7 @@ var codeMirrorFn = function() {
                         if (match!==null) {
                             var token = match[0].trim();
                             if (sol) {
-                                if (['title','author','homepage','background_color','text_color','key_repeat_interval','realtime_interval','again_interval','flickscreen','zoomscreen','zoomscreen_margin','color_palette','youtube'].indexOf(token)>=0) {
+                                if (['title','author','homepage','background_color','text_color','key_repeat_interval','realtime_interval','again_interval','flickscreen','zoomscreen','zoomscreen_margin','color_palette','youtube','sprite_size'].indexOf(token)>=0) {
                                     
                                     if (token==='author' || token==='homepage' || token==='title') {
                                         stream.string=mixedCase;
@@ -1534,7 +1536,11 @@ var codeMirrorFn = function() {
                                     
                                     if(m2!==null) {
                                         state.metadata.push(token);
-                                        state.metadata.push(m2[0].trim());  
+                                        state.metadata.push(m2[0].trim());
+
+                                        if (token==='sprite_size') {
+                                            state.sprite_size = +m2[0].trim();
+                                        }
                                         if (token in state.metadata_lines){
                                             var otherline = state.metadata_lines[token];
                                             logWarning(`You've already defined a ${token.toUpperCase()} in the prelude on line <a onclick="jumpToLine(${otherline})>${otherline}</a>.`,state.lineNumber);
@@ -1654,6 +1660,7 @@ var codeMirrorFn = function() {
                 winconditions: [],
                 metadata: [],
                 metadata_lines: {},
+                sprite_size: 5,
 
                 original_case_names: {},
                 original_line_numbers: {},
